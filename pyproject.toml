@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-confide = "confidante.cli:app"
+confide = "confidante.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["confidante"]

@@ -416,5 +416,27 @@ def status(json_out: bool = typer.Option(False, "--json", help="Output machine-r
         console.print()
 
 
+def main():
+    """Entry point: launch TUI if no args, otherwise run CLI."""
+    import os
+    from pathlib import Path
+
+    if len(sys.argv) == 1:
+        # No args → launch Ink TUI
+        tui_script = Path(__file__).parent.parent / "confide-ui"
+        if tui_script.exists():
+            try:
+                os.execv("/bin/bash", ["/bin/bash", str(tui_script)])
+            except Exception:
+                # Fallback to CLI if TUI launch fails
+                app()
+        else:
+            # TUI not found, run CLI
+            app()
+    else:
+        # Args present → run Python CLI
+        app()
+
+
 if __name__ == "__main__":
-    app()
+    main()
