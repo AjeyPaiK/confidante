@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+# Activate venv if it exists
+if [ -f /home/ajey/.venv/bin/activate ]; then
+    source /home/ajey/.venv/bin/activate
+fi
+
+# Run the Ink TUI
+exec npx tsx /home/ajey/Projects/confidante/ui/src/index.tsx "$@"
