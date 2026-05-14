@@ -36,7 +36,7 @@ def extract_tags(text: str) -> list[str]:
             },
         }
 
-        response = httpx.post(url, json=payload, timeout=30)
+        response = httpx.post(url, json=payload, timeout=60)
         response.raise_for_status()
 
         data = response.json()
@@ -47,6 +47,13 @@ def extract_tags(text: str) -> list[str]:
         end_idx = output.rfind("]")
 
         if start_idx == -1 or end_idx == -1:
+            # Model didn't return JSON, try whole output
+            try:
+                tags = json.loads(output)
+                if isinstance(tags, list):
+                    return [str(tag).strip().lower() for tag in tags if tag][:5]
+            except (json.JSONDecodeError, ValueError):
+                pass
             return []
 
         json_str = output[start_idx : end_idx + 1]
@@ -60,6 +67,6 @@ def extract_tags(text: str) -> list[str]:
 
         return tags[:5]  # Limit to 5 tags
 
-    except Exception:
+    except Exception as e:
         # Silent fallback: never block a write due to tagging failure
         return []
