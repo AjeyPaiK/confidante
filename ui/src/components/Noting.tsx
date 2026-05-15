@@ -18,7 +18,34 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
   const [shimmerIdx, setShimmerIdx] = useState(0);
   const [tickIdx, setTickIdx] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [startTime] = useState(Date.now());
+  const [startTime, setStartTime] = useState(Date.now());
+  const [lastEmbedding, setLastEmbedding] = useState<number[] | undefined>(undefined);
+  const [embeddingCompletedAt, setEmbeddingCompletedAt] = useState<number | undefined>(undefined);
+  const [showWaveform, setShowWaveform] = useState(false);
+
+  useEffect(() => {
+    if (status.phase !== 'idle' && status.phase !== 'done' && status.phase !== 'error') {
+      setStartTime(Date.now());
+    }
+  }, [status.phase]);
+
+  useEffect(() => {
+    if (status.phase === 'embedding' && embedding) {
+      setLastEmbedding(embedding);
+      setShowWaveform(true);
+    } else if (status.phase === 'done' && !embeddingCompletedAt && lastEmbedding) {
+      setEmbeddingCompletedAt(Date.now());
+    }
+  }, [status.phase, embedding, embeddingCompletedAt, lastEmbedding]);
+
+  useEffect(() => {
+    if (embeddingCompletedAt) {
+      const timer = setTimeout(() => {
+        setShowWaveform(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [embeddingCompletedAt]);
 
   useEffect(() => {
     if (
@@ -81,9 +108,16 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
 
   if (status.phase === 'done') {
     return (
-      <Text color="green">
-        ✓ Noted • {status.tags.join(' • ')}
-      </Text>
+      <Box flexDirection="column">
+        <Text color="green">
+          ✓ Noted • {status.tags.join(' • ')}
+        </Text>
+        {showWaveform && lastEmbedding && (
+          <Text color="cyan">
+            {embeddingToWaveform(lastEmbedding, 40, false, 768)}
+          </Text>
+        )}
+      </Box>
     );
   }
 
@@ -98,7 +132,7 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
   // Create shimmering effect on label
   const shimmerLabel = phaseLabel
     .split('')
-    .map((char, idx) => (idx === Math.floor(shimmerIdx * (phaseLabel.length / SHIMMER.length)) ? shimmer : char))
+    .map((char, idx) => (idx === shimmerIdx % phaseLabel.length ? shimmer : char))
     .join('');
 
   // Show waveform for embedding phase
@@ -110,7 +144,7 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
   return (
     <Box flexDirection="column">
       <Text color="magenta">
-        {ticker} {detailedMessage} [{elapsedTime}s] {tokens > 0 ? `{${tokens}}` : ''}
+        {ticker} {detailedMessage} [{elapsedTime}s] {tokens && tokens > 0 ? `{${tokens}}` : ''}
       </Text>
       <Text color="magenta">
         {star} {shimmerLabel}

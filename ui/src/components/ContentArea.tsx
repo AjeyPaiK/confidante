@@ -31,7 +31,7 @@ export const ContentArea: React.FC<ContentAreaProps> = ({
       {mode === 'log' && <LogView scrollOffset={scrollOffset} selectedId={selectedThoughtId} onSelect={onSelectThought} />}
       {mode === 'search' && <SearchView query={query} scrollOffset={scrollOffset} />}
       {mode === 'themes' && <ThemesView scrollOffset={scrollOffset} />}
-      {mode === 'timeline' && <TimelineView scrollOffset={scrollOffset} />}
+      {mode === 'timeline' && <TimelineView scrollOffset={scrollOffset} writeStatus={writeStatus} />}
       {mode === 'detail' && selectedThoughtId && <DetailView thoughtId={selectedThoughtId} />}
     </Box>
   );

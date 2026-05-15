@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { useConfide } from '../hooks/useConfide';
-import type { TimelineCounts } from '../types';
+import type { TimelineCounts, WriteStatus } from '../types';
 
 interface TimelineViewProps {
   scrollOffset: number;
+  writeStatus?: WriteStatus;
 }
 
-export const TimelineView: React.FC<TimelineViewProps> = ({ scrollOffset }) => {
+export const TimelineView: React.FC<TimelineViewProps> = ({ scrollOffset, writeStatus }) => {
   const [timeline, setTimeline] = useState<TimelineCounts>({});
   const [isLoading, setIsLoading] = useState(true);
   const confide = useMemo(() => useConfide(), []);
@@ -18,7 +19,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ scrollOffset }) => {
       setTimeline(data);
       setIsLoading(false);
     });
-  }, [confide]);
+  }, [confide, writeStatus?.phase]);
 
   if (isLoading) {
     return <Text color="magenta">Loading...</Text>;
