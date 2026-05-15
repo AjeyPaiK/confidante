@@ -21,27 +21,27 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ scrollOffset }) => {
   }, []);
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Text color="magenta">Loading...</Text>;
   }
 
   const sorted = Object.entries(timeline).sort(([a], [b]) => a.localeCompare(b));
 
   if (sorted.length === 0) {
-    return <Text dimColor>No entries in the last 30 days.</Text>;
+    return <Text color="magenta">No entries in the last 30 days.</Text>;
   }
 
   const maxCount = Math.max(...sorted.map(([, count]) => count));
 
   return (
     <Box flexDirection="column" marginY={0}>
-      <Text dimColor marginBottom={1}>
+      <Text color="cyan" marginBottom={1}>
         Entry Frequency Over Time
       </Text>
       {sorted.map(([date, count]) => {
         const barWidth = Math.max(1, Math.floor((count / maxCount) * 40));
         const bar = '▄'.repeat(barWidth);
         return (
-          <Text key={date}>
+          <Text key={date} color="yellow">
             {date} {bar} {count}
           </Text>
         );

@@ -32,11 +32,10 @@ export const InputArea: React.FC<InputAreaProps> = ({
   writeStatus,
 }) => {
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" paddingTop={1}>
       <Noting status={writeStatus} />
-      <Box borderStyle="round" borderTop></Box>
-      <Box>
-        <Text>{`> `}</Text>
+      <Box paddingX={0}>
+        <Text color="yellow">{`> `}</Text>
         <TextInput
           value={value}
           onChange={onChange}

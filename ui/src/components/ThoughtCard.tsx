@@ -38,22 +38,27 @@ export const ThoughtCard: React.FC<ThoughtCardProps> = ({
       thought.body.length > 60 ? thought.body.substring(0, 60) + '...' : thought.body;
     return (
       <Box flexDirection="column" marginY={0}>
-        <Text dimColor>
-          #{thought.id}  {timestamp}  {tagsStr}
-          {scorePart}
+        <Text color="cyan">
+          #{thought.id} • {timestamp}
         </Text>
         <Text>  {truncated}</Text>
+        {tagsStr !== '(no tags)' && (
+          <Text color="magenta">  {tagsStr}{scorePart}</Text>
+        )}
       </Box>
     );
   }
 
   return (
-    <Box flexDirection="column" borderStyle="round" marginY={0} paddingX={1}>
-      <Text dimColor>
-        #{thought.id}  {timestamp}  {tagsStr}
+    <Box flexDirection="column" marginY={1}>
+      <Text color="cyan">
+        #{thought.id} • {timestamp}
+      </Text>
+      <Text marginY={0}>{thought.body}</Text>
+      <Text color="magenta">
+        {tagsStr}
         {scorePart}
       </Text>
-      <Text>{thought.body}</Text>
     </Box>
   );
 };

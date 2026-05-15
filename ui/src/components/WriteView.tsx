@@ -49,7 +49,7 @@ export const WriteView: React.FC<WriteViewProps> = ({ writeStatus }) => {
       )}
       {thoughts.length > 0 && (
         <>
-          <Text dimColor marginY={1}>
+          <Text color="cyan" marginY={1}>
             Recent:
           </Text>
           {thoughts.map((t) => (
@@ -58,7 +58,7 @@ export const WriteView: React.FC<WriteViewProps> = ({ writeStatus }) => {
         </>
       )}
       {thoughts.length === 0 && (
-        <Text dimColor>No thoughts yet. Start typing to create your first entry.</Text>
+        <Text color="magenta">No thoughts yet. Start typing to create your first entry.</Text>
       )}
     </Box>
   );

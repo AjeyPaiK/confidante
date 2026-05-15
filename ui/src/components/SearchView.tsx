@@ -27,15 +27,15 @@ export const SearchView: React.FC<SearchViewProps> = ({ query, scrollOffset }) =
   }, [query]);
 
   if (!query) {
-    return <Text dimColor>Type a search query and press Enter...</Text>;
+    return <Text color="magenta">Type a search query and press Enter...</Text>;
   }
 
   if (isLoading) {
-    return <Text>Searching...</Text>;
+    return <Text color="magenta">Searching...</Text>;
   }
 
   if (results.length === 0) {
-    return <Text dimColor>No results found for "{query}"</Text>;
+    return <Text color="magenta">No results found for "{query}"</Text>;
   }
 
   const visibleCount = 10;
@@ -43,7 +43,7 @@ export const SearchView: React.FC<SearchViewProps> = ({ query, scrollOffset }) =
 
   return (
     <Box flexDirection="column" marginY={0}>
-      <Text dimColor marginY={0} marginBottom={1}>
+      <Text color="cyan" marginY={0} marginBottom={1}>
         Found {results.length} result{results.length !== 1 ? 's' : ''}
       </Text>
       {visible.map((t) => (

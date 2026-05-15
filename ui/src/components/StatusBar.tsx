@@ -17,17 +17,16 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mode }) => {
   };
 
   return (
-    <Box flexDirection="column">
-      <Box borderStyle="round" borderBottom></Box>
-      <Box justifyContent="space-between" paddingX={1}>
-        <Box gap={2}>
+    <Box flexDirection="column" paddingTop={1}>
+      <Box justifyContent="space-between" paddingX={0}>
+        <Box gap={3}>
           {commands.map((cmd) => (
-            <Text key={cmd} dimColor={mode !== cmd}>
+            <Text key={cmd} color={mode === cmd ? 'cyan' : 'white'}>
               /{cmd}
             </Text>
           ))}
         </Box>
-        <Text dimColor>ctrl+c:quit</Text>
+        <Text color="magenta">ctrl+c:quit</Text>
       </Box>
     </Box>
   );

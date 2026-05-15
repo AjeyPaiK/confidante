@@ -25,16 +25,16 @@ export const LogView: React.FC<LogViewProps> = ({ scrollOffset }) => {
   const visible = thoughts.slice(scrollOffset, scrollOffset + visibleCount);
 
   if (isLoading) {
-    return <Text dimColor>Loading...</Text>;
+    return <Text color="magenta">Loading...</Text>;
   }
 
   if (thoughts.length === 0) {
-    return <Text dimColor>No thoughts yet.</Text>;
+    return <Text color="magenta">No thoughts yet.</Text>;
   }
 
   return (
     <Box flexDirection="column" marginY={0}>
-      <Text dimColor marginY={0} marginBottom={1}>
+      <Text color="cyan" marginY={0} marginBottom={1}>
         Showing {visible.length} of {thoughts.length}
       </Text>
       {visible.map((t) => (

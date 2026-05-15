@@ -7,16 +7,15 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ entryCount }) => {
   return (
-    <Box flexDirection="column">
-      <Box justifyContent="space-between" paddingX={1}>
-        <Text bold dimColor>
+    <Box flexDirection="column" paddingBottom={1}>
+      <Box justifyContent="space-between" paddingX={0}>
+        <Text color="yellow" bold>
           confidante
         </Text>
-        <Text dimColor>
+        <Text color="magenta">
           {entryCount === 1 ? '1 thought' : `${entryCount} thoughts`}
         </Text>
       </Box>
-      <Box borderStyle="round" borderTop></Box>
     </Box>
   );
 };

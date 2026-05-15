@@ -21,7 +21,7 @@ export const ThemesView: React.FC<ThemesViewProps> = ({ scrollOffset }) => {
   }, []);
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Text color="magenta">Loading...</Text>;
   }
 
   const sorted = Object.entries(tagCounts)
@@ -29,21 +29,21 @@ export const ThemesView: React.FC<ThemesViewProps> = ({ scrollOffset }) => {
     .slice(0, 15);
 
   if (sorted.length === 0) {
-    return <Text dimColor>No tags yet.</Text>;
+    return <Text color="magenta">No tags yet.</Text>;
   }
 
   const maxCount = sorted[0][1];
 
   return (
     <Box flexDirection="column" marginY={0}>
-      <Text dimColor marginBottom={1}>
+      <Text color="cyan" marginBottom={1}>
         Topic Frequency
       </Text>
       {sorted.map(([tag, count], idx) => {
         const barWidth = Math.max(1, Math.floor((count / maxCount) * 20));
         const bar = '█'.repeat(barWidth);
         return (
-          <Text key={tag}>
+          <Text key={tag} color="yellow">
             {String(idx + 1).padEnd(2)} {tag.padEnd(15)} {String(count).padEnd(3)} {bar}
           </Text>
         );

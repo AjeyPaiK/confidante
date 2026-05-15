@@ -45,7 +45,7 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
   if (status.phase === 'done') {
     return (
       <Text color="green">
-        ✓ Noted.  {status.tags.join('  ')}
+        ✓ Noted • {status.tags.join(' • ')}
       </Text>
     );
   }
@@ -59,8 +59,8 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
   }
 
   return (
-    <Text dimColor>
-      {star} {phaseLabel}...
+    <Text color="magenta">
+      {star} {phaseLabel}
     </Text>
   );
 };
