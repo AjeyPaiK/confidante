@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { useConfide } from '../hooks/useConfide';
 import type { ThoughtRow } from '../types';
@@ -10,7 +10,7 @@ interface DetailViewProps {
 export const DetailView: React.FC<DetailViewProps> = ({ thoughtId }) => {
   const [thought, setThought] = useState<ThoughtRow | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const confide = useConfide();
+  const confide = useMemo(() => useConfide(), []);
 
   useEffect(() => {
     setIsLoading(true);

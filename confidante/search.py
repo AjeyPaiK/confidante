@@ -13,7 +13,7 @@ def semantic_search(
     Returns list of (score, thought) tuples, sorted by score descending.
     """
     # Embed query
-    query_bytes = embed(query)
+    query_bytes, _ = embed(query)
     query_vec = embedding_from_bytes(query_bytes)
 
     # Filter thoughts with embeddings

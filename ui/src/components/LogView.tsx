@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { useConfide } from '../hooks/useConfide';
 import { ThoughtCard } from './ThoughtCard';
@@ -13,7 +13,7 @@ interface LogViewProps {
 export const LogView: React.FC<LogViewProps> = ({ scrollOffset, selectedId, onSelect }) => {
   const [thoughts, setThoughts] = useState<ThoughtRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const confide = useConfide();
+  const confide = useMemo(() => useConfide(), []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -21,7 +21,7 @@ export const LogView: React.FC<LogViewProps> = ({ scrollOffset, selectedId, onSe
       setThoughts(data);
       setIsLoading(false);
     });
-  }, []);
+  }, [confide]);
 
   // Update selected thought when scrolling
   useEffect(() => {

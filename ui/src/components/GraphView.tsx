@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { useConfide } from '../hooks/useConfide';
 import { renderGraph } from '../utils/graphRenderer';
@@ -11,7 +11,7 @@ interface GraphViewProps {
 export const GraphView: React.FC<GraphViewProps> = ({ refreshTrigger = 0 }) => {
   const [graphData, setGraphData] = useState<GraphData>({ nodes: [], edges: [], positions: {} });
   const [isLoading, setIsLoading] = useState(true);
-  const confide = useConfide();
+  const confide = useMemo(() => useConfide(), []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -19,7 +19,7 @@ export const GraphView: React.FC<GraphViewProps> = ({ refreshTrigger = 0 }) => {
       setGraphData(data);
       setIsLoading(false);
     });
-  }, [refreshTrigger]);
+  }, [refreshTrigger, confide]);
 
   const terminalHeight = process.stdout.rows ?? 24;
   const terminalWidth = process.stdout.columns ?? 80;

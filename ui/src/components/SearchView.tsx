@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { useConfide } from '../hooks/useConfide';
 import { ThoughtCard } from './ThoughtCard';
@@ -12,7 +12,7 @@ interface SearchViewProps {
 export const SearchView: React.FC<SearchViewProps> = ({ query, scrollOffset }) => {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const confide = useConfide();
+  const confide = useMemo(() => useConfide(), []);
 
   useEffect(() => {
     if (!query) {
@@ -24,7 +24,7 @@ export const SearchView: React.FC<SearchViewProps> = ({ query, scrollOffset }) =
       setResults(data);
       setIsLoading(false);
     });
-  }, [query]);
+  }, [query, confide]);
 
   if (!query) {
     return <Text color="magenta">Type a search query and press Enter...</Text>;

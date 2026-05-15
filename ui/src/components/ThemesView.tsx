@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { useConfide } from '../hooks/useConfide';
 import type { TagCounts } from '../types';
@@ -10,7 +10,7 @@ interface ThemesViewProps {
 export const ThemesView: React.FC<ThemesViewProps> = ({ scrollOffset }) => {
   const [tagCounts, setTagCounts] = useState<TagCounts>({});
   const [isLoading, setIsLoading] = useState(true);
-  const confide = useConfide();
+  const confide = useMemo(() => useConfide(), []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -18,7 +18,7 @@ export const ThemesView: React.FC<ThemesViewProps> = ({ scrollOffset }) => {
       setTagCounts(data);
       setIsLoading(false);
     });
-  }, []);
+  }, [confide]);
 
   if (isLoading) {
     return <Text color="magenta">Loading...</Text>;
