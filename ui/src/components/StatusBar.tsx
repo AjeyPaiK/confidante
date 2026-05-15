@@ -29,7 +29,6 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mode }) => {
             </Text>
           ))}
           <Text color="white">/delete #ID</Text>
-          <Text color="magenta">/exit</Text>
         </Box>
         {modeHint && <Text color="yellow">{modeHint}</Text>}
         {!modeHint && <Text color="magenta">ctrl+c:quit</Text>}

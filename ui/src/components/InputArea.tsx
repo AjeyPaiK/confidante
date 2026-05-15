@@ -20,6 +20,9 @@ const getPlaceholder = (mode: Mode): string => {
   if (mode === 'search') {
     return 'search your thoughts...';
   }
+  if (mode === 'detail') {
+    return 'esc:back';
+  }
   return 'press Escape to start writing';
 };
 
