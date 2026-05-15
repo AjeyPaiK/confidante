@@ -96,8 +96,15 @@ def write(
             if json_out:
                 output_json({"status": "embedding"})
             try:
-                from .embeddings import embed
+                from .embeddings import embed, embedding_from_bytes
+                import numpy as np
                 embedding_bytes = embed(text)
+                embedding_array = embedding_from_bytes(embedding_bytes)
+                if json_out:
+                    output_json({
+                        "status": "embedding_data",
+                        "embedding": embedding_array.tolist()
+                    })
                 update_thought(thought_id, embedding=embedding_bytes)
             except Exception as e:
                 if not json_out:

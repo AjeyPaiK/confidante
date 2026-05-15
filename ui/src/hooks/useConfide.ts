@@ -92,7 +92,12 @@ export function useConfide(): ConfideAPI {
     onProgress: (status: WriteStatus) => void
   ): Promise<void> {
     try {
-      onProgress({ phase: 'logging' });
+      const startTime = Date.now();
+      let embedding: number[] | undefined;
+
+      const getElapsed = () => Math.round((Date.now() - startTime) / 1000);
+
+      onProgress({ phase: 'logging', elapsed: 0 });
       const subprocess = execa(CONFIDE_BIN, ['write', text, '--json']);
 
       await new Promise<void>((resolve, reject) => {
@@ -101,12 +106,17 @@ export function useConfide(): ConfideAPI {
         readline.on('line', (line: string) => {
           try {
             const event = JSON.parse(line);
+            const elapsed = getElapsed();
+
             if (event.status === 'tagging') {
-              onProgress({ phase: 'tagging' });
+              onProgress({ phase: 'tagging', elapsed });
             } else if (event.status === 'embedding') {
-              onProgress({ phase: 'embedding' });
+              onProgress({ phase: 'embedding', elapsed, embedding });
+            } else if (event.status === 'embedding_data') {
+              embedding = event.embedding;
+              onProgress({ phase: 'embedding', elapsed, embedding });
             } else if (event.status === 'done') {
-              onProgress({ phase: 'done', id: event.id, tags: event.tags ?? [] });
+              onProgress({ phase: 'done', id: event.id, tags: event.tags ?? [], elapsed });
             } else if (event.status === 'error') {
               onProgress({ phase: 'error', message: event.message });
             }
