@@ -256,17 +256,21 @@ def show(thought_id: int = typer.Argument(..., help="Entry ID")) -> None:
 
 
 @app.command()
-def delete(thought_id: int = typer.Argument(..., help="Entry ID")) -> None:
+def delete(
+    thought_id: int = typer.Argument(..., help="Entry ID"),
+    force: bool = typer.Option(False, "--force", "-f", help="Skip confirmation prompt"),
+) -> None:
     """Delete an entry (cannot be undone)."""
     thought = get_thought(thought_id)
     if not thought:
         print_error(f"Entry #{thought_id} not found.")
         raise typer.Exit(1)
 
-    confirm = typer.confirm(f"Really delete entry #{thought_id}? This cannot be undone.")
-    if not confirm:
-        print_warning("Cancelled.")
-        return
+    if not force:
+        confirm = typer.confirm(f"Really delete entry #{thought_id}? This cannot be undone.")
+        if not confirm:
+            print_warning("Cancelled.")
+            return
 
     delete_thought(thought_id)
     print_success(f"Deleted entry #{thought_id}.")

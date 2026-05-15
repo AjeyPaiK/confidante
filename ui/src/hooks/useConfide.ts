@@ -145,7 +145,7 @@ export function useConfide(): ConfideAPI {
 
   async function deleteThought(id: number): Promise<void> {
     try {
-      await execa(CONFIDE_BIN, ['delete', String(id)]);
+      await execa(CONFIDE_BIN, ['delete', String(id), '--force']);
     } catch (error) {
       throw error;
     }
