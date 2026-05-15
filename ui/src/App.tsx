@@ -15,6 +15,7 @@ export const App = () => {
   const [entryCount, setEntryCount] = useState(0);
   const [writeStatus, setWriteStatus] = useState<WriteStatus>({ phase: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedThoughtId, setSelectedThoughtId] = useState<number | null>(null);
   const confide = useConfide();
 
   useEffect(() => {
@@ -29,19 +30,28 @@ export const App = () => {
       setInputText('');
       setQuery('');
       setScrollOffset(0);
+      setSelectedThoughtId(null);
     } else if (key.upArrow && scrollOffset > 0) {
       setScrollOffset((prev) => Math.max(0, prev - 1));
     } else if (key.downArrow) {
       setScrollOffset((prev) => prev + 1);
+    } else if (key.return && mode === 'log' && selectedThoughtId) {
+      setMode('detail');
     }
   });
 
   const handleSubmit = async (text: string) => {
+    // Check for exit command
+    if (text === '/exit') {
+      process.exit(0);
+    }
+
     // Check for mode switching
     if (text === '/log') {
       setMode('log');
       setInputText('');
       setScrollOffset(0);
+      setSelectedThoughtId(null);
       return;
     }
     if (text === '/themes') {
@@ -62,6 +72,20 @@ export const App = () => {
       setQuery(searchQuery);
       setInputText('');
       setScrollOffset(0);
+      return;
+    }
+    if (text.startsWith('/delete')) {
+      const idStr = text.slice(7).trim();
+      const thoughtId = parseInt(idStr, 10);
+      if (thoughtId) {
+        try {
+          await confide.deleteThought(thoughtId);
+          setInputText('');
+          setEntryCount((prev) => Math.max(0, prev - 1));
+        } catch (error) {
+          console.error('Delete error:', error);
+        }
+      }
       return;
     }
 
@@ -98,6 +122,8 @@ export const App = () => {
         query={query}
         scrollOffset={scrollOffset}
         writeStatus={writeStatus}
+        selectedThoughtId={selectedThoughtId}
+        onSelectThought={setSelectedThoughtId}
       />
       <InputArea
         mode={mode}

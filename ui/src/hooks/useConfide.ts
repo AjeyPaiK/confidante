@@ -20,6 +20,7 @@ export interface ConfideAPI {
   fetchTimeline: (opts?: { since?: string }) => Promise<TimelineCounts>;
   fetchGraph: () => Promise<GraphData>;
   writeThought: (text: string, onProgress: (status: WriteStatus) => void) => Promise<void>;
+  deleteThought: (id: number) => Promise<void>;
 }
 
 export function useConfide(): ConfideAPI {
@@ -142,6 +143,14 @@ export function useConfide(): ConfideAPI {
     }
   }
 
+  async function deleteThought(id: number): Promise<void> {
+    try {
+      await execa(CONFIDE_BIN, ['delete', String(id)]);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   return {
     fetchStatus,
     fetchLog,
@@ -150,5 +159,6 @@ export function useConfide(): ConfideAPI {
     fetchTimeline,
     fetchGraph,
     writeThought,
+    deleteThought,
   };
 }

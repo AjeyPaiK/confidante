@@ -1,4 +1,4 @@
-export type Mode = 'write' | 'search' | 'log' | 'themes' | 'timeline';
+export type Mode = 'write' | 'search' | 'log' | 'themes' | 'timeline' | 'detail';
 
 export interface ThoughtRow {
   id: number;

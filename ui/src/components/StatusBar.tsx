@@ -14,7 +14,10 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mode }) => {
     log: 'log',
     themes: 'themes',
     timeline: 'timeline',
+    detail: 'detail',
   };
+
+  const modeHint = mode === 'log' ? '↑↓:select enter:open' : mode === 'detail' ? 'esc:back' : '';
 
   return (
     <Box flexDirection="column" paddingTop={1}>
@@ -25,8 +28,11 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mode }) => {
               /{cmd}
             </Text>
           ))}
+          <Text color="white">/delete #ID</Text>
+          <Text color="magenta">/exit</Text>
         </Box>
-        <Text color="magenta">ctrl+c:quit</Text>
+        {modeHint && <Text color="yellow">{modeHint}</Text>}
+        {!modeHint && <Text color="magenta">ctrl+c:quit</Text>}
       </Box>
     </Box>
   );

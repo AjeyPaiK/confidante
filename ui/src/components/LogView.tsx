@@ -6,9 +6,11 @@ import type { ThoughtRow } from '../types';
 
 interface LogViewProps {
   scrollOffset: number;
+  selectedId: number | null;
+  onSelect: (id: number | null) => void;
 }
 
-export const LogView: React.FC<LogViewProps> = ({ scrollOffset }) => {
+export const LogView: React.FC<LogViewProps> = ({ scrollOffset, selectedId, onSelect }) => {
   const [thoughts, setThoughts] = useState<ThoughtRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const confide = useConfide();
@@ -20,6 +22,13 @@ export const LogView: React.FC<LogViewProps> = ({ scrollOffset }) => {
       setIsLoading(false);
     });
   }, []);
+
+  // Update selected thought when scrolling
+  useEffect(() => {
+    if (thoughts.length > 0 && scrollOffset < thoughts.length) {
+      onSelect(thoughts[scrollOffset].id);
+    }
+  }, [scrollOffset, thoughts, onSelect]);
 
   const visibleCount = 10;
   const visible = thoughts.slice(scrollOffset, scrollOffset + visibleCount);
@@ -37,9 +46,14 @@ export const LogView: React.FC<LogViewProps> = ({ scrollOffset }) => {
       <Text color="cyan" marginY={0} marginBottom={1}>
         Showing {visible.length} of {thoughts.length}
       </Text>
-      {visible.map((t) => (
-        <ThoughtCard key={t.id} thought={t} compact />
-      ))}
+      {visible.map((t, idx) => {
+        const isSelected = selectedId === t.id;
+        return (
+          <Box key={t.id} flexDirection="column" marginY={0} borderStyle={isSelected ? 'round' : undefined} borderColor={isSelected ? 'cyan' : undefined}>
+            <ThoughtCard thought={t} compact />
+          </Box>
+        );
+      })}
     </Box>
   );
 };
