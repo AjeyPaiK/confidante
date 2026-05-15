@@ -3,7 +3,7 @@ const SPARKLINE = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'];
 
 export function embeddingToWaveform(
   embedding: number[],
-  maxChars: number = 50,
+  maxChars: number = 30,
   showProgress: boolean = false,
   totalDims?: number
 ): string {

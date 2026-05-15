@@ -12,11 +12,13 @@ interface NotingProps {
 
 export const Noting: React.FC<NotingProps> = ({ status }) => {
   const embedding = status.phase !== 'idle' && status.phase !== 'done' && status.phase !== 'error' && 'embedding' in status ? status.embedding : undefined;
-  const elapsed = status.phase !== 'idle' && status.phase !== 'error' && 'elapsed' in status ? status.elapsed : 0;
+  const statusElapsed = status.phase !== 'idle' && status.phase !== 'error' && 'elapsed' in status ? status.elapsed : 0;
   const tokens = status.phase !== 'idle' && status.phase !== 'error' && 'tokens' in status ? status.tokens : 0;
   const [starIdx, setStarIdx] = useState(0);
   const [shimmerIdx, setShimmerIdx] = useState(0);
   const [tickIdx, setTickIdx] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [startTime] = useState(Date.now());
 
   useEffect(() => {
     if (
@@ -39,12 +41,17 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
       setTickIdx((i) => (i + 1) % 4);
     }, 400);
 
+    const timerId = setInterval(() => {
+      setElapsedTime(Math.round((Date.now() - startTime) / 1000));
+    }, 100);
+
     return () => {
       clearInterval(starId);
       clearInterval(shimmerId);
       clearInterval(tickId);
+      clearInterval(timerId);
     };
-  }, [status.phase]);
+  }, [status.phase, startTime]);
 
   if (status.phase === 'idle') {
     return null;
@@ -103,7 +110,7 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
   return (
     <Box flexDirection="column">
       <Text color="magenta">
-        {ticker} {detailedMessage} [{elapsed}s] {tokens > 0 ? `{${tokens}}` : ''}
+        {ticker} {detailedMessage} [{elapsedTime}s] {tokens > 0 ? `{${tokens}}` : ''}
       </Text>
       <Text color="magenta">
         {star} {shimmerLabel}
