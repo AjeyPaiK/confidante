@@ -1,4 +1,4 @@
-import React from 'ink';
+import React from 'react';
 import { Box } from 'ink';
 import { WriteView } from './WriteView';
 import { LogView } from './LogView';
