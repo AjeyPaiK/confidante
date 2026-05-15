@@ -36,7 +36,7 @@ export const InputArea: React.FC<InputAreaProps> = ({
       <Noting status={writeStatus} />
       <Box borderStyle="round" borderTop></Box>
       <Box>
-        <Text>> </Text>
+        <Text>{`> `}</Text>
         <TextInput
           value={value}
           onChange={onChange}
