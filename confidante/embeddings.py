@@ -4,10 +4,10 @@ import numpy as np
 from .config import OLLAMA_BASE, EMBED_MODEL, EMBED_DIM
 
 
-def embed(text: str) -> bytes:
+def embed(text: str) -> tuple[bytes, int]:
     """
     Embed text using nomic-embed-text via Ollama.
-    Returns normalized embedding as float32 bytes.
+    Returns (normalized embedding as float32 bytes, total_tokens).
     """
     url = f"{OLLAMA_BASE}/api/embed"
     payload = {
@@ -31,7 +31,10 @@ def embed(text: str) -> bytes:
     if norm > 0:
         embedding = embedding / norm
 
-    return embedding.tobytes()
+    # Get token count
+    tokens = data.get("prompt_eval_count", 0)
+
+    return embedding.tobytes(), tokens
 
 
 def embedding_from_bytes(data: bytes) -> np.ndarray:

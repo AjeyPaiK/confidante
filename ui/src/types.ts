@@ -49,6 +49,6 @@ export type WritePhase = 'idle' | 'logging' | 'tagging' | 'embedding';
 
 export type WriteStatus =
   | { phase: 'idle' }
-  | { phase: Exclude<WritePhase, 'idle'>; elapsed?: number; embedding?: number[] }
-  | { phase: 'done'; id: number; tags: string[]; elapsed?: number }
+  | { phase: Exclude<WritePhase, 'idle'>; elapsed?: number; embedding?: number[]; tokens?: number }
+  | { phase: 'done'; id: number; tags: string[]; elapsed?: number; tokens?: number }
   | { phase: 'error'; message: string };

@@ -18,10 +18,10 @@ Text: {text}
 Tags:"""
 
 
-def extract_tags(text: str) -> list[str]:
+def extract_tags(text: str) -> tuple[list[str], int]:
     """
     Extract factual topic tags from thought text using gemma3:4b.
-    Returns empty list on any failure (never blocks a write).
+    Returns (tags, total_tokens). Returns ([], 0) on any failure (never blocks a write).
     """
     try:
         prompt = TAGGING_PROMPT.format(text=text)
@@ -42,6 +42,11 @@ def extract_tags(text: str) -> list[str]:
         data = response.json()
         output = data.get("response", "").strip()
 
+        # Get token counts from Ollama response
+        prompt_tokens = data.get("prompt_eval_count", 0)
+        response_tokens = data.get("eval_count", 0)
+        total_tokens = prompt_tokens + response_tokens
+
         # Extract JSON array from output
         start_idx = output.find("[")
         end_idx = output.rfind("]")
@@ -51,22 +56,23 @@ def extract_tags(text: str) -> list[str]:
             try:
                 tags = json.loads(output)
                 if isinstance(tags, list):
-                    return [str(tag).strip().lower() for tag in tags if tag][:5]
+                    parsed_tags = [str(tag).strip().lower() for tag in tags if tag][:5]
+                    return parsed_tags, total_tokens
             except (json.JSONDecodeError, ValueError):
                 pass
-            return []
+            return [], total_tokens
 
         json_str = output[start_idx : end_idx + 1]
         tags = json.loads(json_str)
 
         if not isinstance(tags, list):
-            return []
+            return [], total_tokens
 
         # Normalize: lowercase, strip whitespace
         tags = [str(tag).strip().lower() for tag in tags if tag]
 
-        return tags[:5]  # Limit to 5 tags
+        return tags[:5], total_tokens  # Limit to 5 tags
 
     except Exception as e:
         # Silent fallback: never block a write due to tagging failure
-        return []
+        return [], 0

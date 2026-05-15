@@ -79,6 +79,7 @@ def write(
 
     thought_id = insert_thought(body=text, created_at=created_at)
     tags = []
+    total_tokens = 0
 
     try:
         if not no_tag:
@@ -86,7 +87,10 @@ def write(
             if json_out:
                 output_json({"status": "tagging"})
             try:
-                tags = extract_tags(text)
+                tags, tag_tokens = extract_tags(text)
+                total_tokens += tag_tokens
+                if json_out:
+                    output_json({"status": "tagging_done", "tokens": total_tokens})
             except Exception as e:
                 if not json_out:
                     print_warning(f"Tagging failed: {e}")
@@ -98,12 +102,14 @@ def write(
             try:
                 from .embeddings import embed, embedding_from_bytes
                 import numpy as np
-                embedding_bytes = embed(text)
+                embedding_bytes, embed_tokens = embed(text)
+                total_tokens += embed_tokens
                 embedding_array = embedding_from_bytes(embedding_bytes)
                 if json_out:
                     output_json({
                         "status": "embedding_data",
-                        "embedding": embedding_array.tolist()
+                        "embedding": embedding_array.tolist(),
+                        "tokens": total_tokens
                     })
                 update_thought(thought_id, embedding=embedding_bytes)
             except Exception as e:
@@ -114,7 +120,7 @@ def write(
             update_thought(thought_id, tags=tags)
 
         if json_out:
-            output_json({"status": "done", "id": thought_id, "tags": tags})
+            output_json({"status": "done", "id": thought_id, "tags": tags, "tokens": total_tokens})
         else:
             if tags:
                 tags_display = " ".join(f"[magenta]{tag}[/magenta]" for tag in tags)

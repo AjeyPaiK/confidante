@@ -94,10 +94,11 @@ export function useConfide(): ConfideAPI {
     try {
       const startTime = Date.now();
       let embedding: number[] | undefined;
+      let tokens = 0;
 
       const getElapsed = () => Math.round((Date.now() - startTime) / 1000);
 
-      onProgress({ phase: 'logging', elapsed: 0 });
+      onProgress({ phase: 'logging', elapsed: 0, tokens: 0 });
       const subprocess = execa(CONFIDE_BIN, ['write', text, '--json']);
 
       await new Promise<void>((resolve, reject) => {
@@ -107,16 +108,21 @@ export function useConfide(): ConfideAPI {
           try {
             const event = JSON.parse(line);
             const elapsed = getElapsed();
+            if (event.tokens !== undefined) {
+              tokens = event.tokens;
+            }
 
             if (event.status === 'tagging') {
-              onProgress({ phase: 'tagging', elapsed });
+              onProgress({ phase: 'tagging', elapsed, tokens });
+            } else if (event.status === 'tagging_done') {
+              onProgress({ phase: 'tagging', elapsed, tokens });
             } else if (event.status === 'embedding') {
-              onProgress({ phase: 'embedding', elapsed, embedding });
+              onProgress({ phase: 'embedding', elapsed, tokens, embedding });
             } else if (event.status === 'embedding_data') {
               embedding = event.embedding;
-              onProgress({ phase: 'embedding', elapsed, embedding });
+              onProgress({ phase: 'embedding', elapsed, tokens, embedding });
             } else if (event.status === 'done') {
-              onProgress({ phase: 'done', id: event.id, tags: event.tags ?? [], elapsed });
+              onProgress({ phase: 'done', id: event.id, tags: event.tags ?? [], elapsed, tokens });
             } else if (event.status === 'error') {
               onProgress({ phase: 'error', message: event.message });
             }

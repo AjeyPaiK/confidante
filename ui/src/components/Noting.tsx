@@ -13,6 +13,7 @@ interface NotingProps {
 export const Noting: React.FC<NotingProps> = ({ status }) => {
   const embedding = status.phase !== 'idle' && status.phase !== 'done' && status.phase !== 'error' && 'embedding' in status ? status.embedding : undefined;
   const elapsed = status.phase !== 'idle' && status.phase !== 'error' && 'elapsed' in status ? status.elapsed : 0;
+  const tokens = status.phase !== 'idle' && status.phase !== 'error' && 'tokens' in status ? status.tokens : 0;
   const [starIdx, setStarIdx] = useState(0);
   const [shimmerIdx, setShimmerIdx] = useState(0);
   const [tickIdx, setTickIdx] = useState(0);
@@ -102,7 +103,7 @@ export const Noting: React.FC<NotingProps> = ({ status }) => {
   return (
     <Box flexDirection="column">
       <Text color="magenta">
-        {ticker} {detailedMessage} [{elapsed}s]
+        {ticker} {detailedMessage} [{elapsed}s] {tokens > 0 ? `{${tokens}}` : ''}
       </Text>
       <Text color="magenta">
         {star} {shimmerLabel}
