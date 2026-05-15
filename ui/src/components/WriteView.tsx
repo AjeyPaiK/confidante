@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Text } from 'ink';
-import { useConfide } from '../hooks/useConfide';
-import { ThoughtCard } from './ThoughtCard';
-import type { ThoughtRow, WriteStatus } from '../types';
+import { GraphView } from './GraphView';
+import type { WriteStatus } from '../types';
 
 interface WriteViewProps {
   writeStatus: WriteStatus;
 }
 
 export const WriteView: React.FC<WriteViewProps> = ({ writeStatus }) => {
-  const [thoughts, setThoughts] = useState<ThoughtRow[]>([]);
-  const confide = useConfide();
-
-  useEffect(() => {
-    confide.fetchLog({ limit: 5 }).then(setThoughts);
-  }, [writeStatus.phase === 'done']);
+  const refreshTrigger = writeStatus.phase === 'done' ? Math.random() : 0;
 
   const statusMessage =
     writeStatus.phase === 'idle'
@@ -47,19 +41,7 @@ export const WriteView: React.FC<WriteViewProps> = ({ writeStatus }) => {
           {statusMessage}
         </Text>
       )}
-      {thoughts.length > 0 && (
-        <>
-          <Text color="cyan" marginY={1}>
-            Recent:
-          </Text>
-          {thoughts.map((t) => (
-            <ThoughtCard key={t.id} thought={t} compact />
-          ))}
-        </>
-      )}
-      {thoughts.length === 0 && (
-        <Text color="magenta">No thoughts yet. Start typing to create your first entry.</Text>
-      )}
+      <GraphView refreshTrigger={refreshTrigger} />
     </Box>
   );
 };

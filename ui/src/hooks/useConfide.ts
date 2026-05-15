@@ -7,6 +7,7 @@ import type {
   TimelineCounts,
   StatusResult,
   WriteStatus,
+  GraphData,
 } from '../types';
 
 const CONFIDE_BIN = process.env.CONFIDE_BIN ?? 'confide';
@@ -17,6 +18,7 @@ export interface ConfideAPI {
   fetchSearch: (query: string, opts?: { top?: number }) => Promise<SearchResult[]>;
   fetchThemes: (opts?: { top?: number }) => Promise<TagCounts>;
   fetchTimeline: (opts?: { since?: string }) => Promise<TimelineCounts>;
+  fetchGraph: () => Promise<GraphData>;
   writeThought: (text: string, onProgress: (status: WriteStatus) => void) => Promise<void>;
 }
 
@@ -76,6 +78,15 @@ export function useConfide(): ConfideAPI {
     }
   }
 
+  async function fetchGraph(): Promise<GraphData> {
+    try {
+      const { stdout } = await execa(CONFIDE_BIN, ['graph', '--json']);
+      return JSON.parse(stdout);
+    } catch {
+      return { nodes: [], edges: [], positions: {} };
+    }
+  }
+
   async function writeThought(
     text: string,
     onProgress: (status: WriteStatus) => void
@@ -121,6 +132,7 @@ export function useConfide(): ConfideAPI {
     fetchSearch,
     fetchThemes,
     fetchTimeline,
+    fetchGraph,
     writeThought,
   };
 }

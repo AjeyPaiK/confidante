@@ -331,6 +331,31 @@ def timeline(
 
 
 @app.command()
+def graph(json_out: bool = typer.Option(False, "--json", help="Output machine-readable JSON")) -> None:
+    """View semantic relationship graph of all thoughts."""
+    from .graph import compute_graph_layout
+
+    thoughts = get_all_thoughts()
+
+    if not thoughts:
+        if json_out:
+            output_json({"nodes": [], "edges": [], "positions": {}})
+        else:
+            print_warning("No thoughts yet.")
+        return
+
+    result = compute_graph_layout(thoughts)
+
+    if json_out:
+        output_json(result)
+    else:
+        # Pretty-print graph stats
+        from rich.console import Console
+        console = Console()
+        console.print(f"Graph: {len(result['nodes'])} nodes, {len(result['edges'])} edges")
+
+
+@app.command()
 def reindex(
     missing_only: bool = typer.Option(False, "--missing-only", help="Only reindex entries without embeddings")
 ) -> None:

@@ -14,6 +14,30 @@ export interface SearchResult extends ThoughtRow {
 export type TagCounts = Record<string, number>;
 export type TimelineCounts = Record<string, number>;
 
+export interface GraphNode {
+  id: number;
+  label: string;
+  tags: string[];
+  created_at: string;
+}
+
+export interface GraphEdge {
+  source: number;
+  target: number;
+  weight: number;
+}
+
+export interface GraphPosition {
+  x: number;
+  y: number;
+}
+
+export interface GraphData {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  positions: Record<string, GraphPosition>;
+}
+
 export interface StatusResult {
   entries: number;
   latest_id: number | null;
