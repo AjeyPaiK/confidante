@@ -258,7 +258,7 @@ def show(thought_id: int = typer.Argument(..., help="Entry ID")) -> None:
 @app.command()
 def delete(
     thought_id: int = typer.Argument(..., help="Entry ID"),
-    force: bool = typer.Option(False, "--force", "-f", help="Skip confirmation prompt"),
+    force: bool = typer.Option(False, help="Skip confirmation prompt"),
 ) -> None:
     """Delete an entry (cannot be undone)."""
     thought = get_thought(thought_id)
