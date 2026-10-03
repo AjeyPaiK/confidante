@@ -391,7 +391,7 @@ def reindex(
     with typer.progressbar(length=len(thoughts), label="Reindexing") as progress:
         for thought in thoughts:
             try:
-                embedding_bytes = embed(thought.body)
+                embedding_bytes, _ = embed(thought.body)
                 update_thought(thought.id, embedding=embedding_bytes)
             except Exception as e:
                 print_warning(f"Failed to embed #{thought.id}: {e}")
